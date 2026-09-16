@@ -131,3 +131,25 @@ SELECT
 FROM monthly_rides
 GROUP BY month_start
 ORDER BY month_start;
+
+-- ============================================================
+-- 6. Bike Type Usage
+-- Purpose: Compare bike type preferences between casual riders
+-- and annual members, including each bike type's percentage
+-- within its rider group.
+-- ============================================================
+
+SELECT
+  member_casual,
+  rideable_type,
+  COUNT(*) AS number_of_rides,
+  ROUND(
+    COUNT(*) * 100.0 /
+    SUM(COUNT(*)) OVER (PARTITION BY member_casual),
+    2
+  ) AS percentage_within_rider_type
+FROM `omega-granite-504718-n9.cyclistic_case_study.cyclistic_cleaned`
+WHERE started_at >= TIMESTAMP('2025-08-01')
+  AND started_at < TIMESTAMP('2026-08-01')
+GROUP BY member_casual, rideable_type
+ORDER BY member_casual, number_of_rides DESC;
