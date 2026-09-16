@@ -153,3 +153,36 @@ WHERE started_at >= TIMESTAMP('2025-08-01')
   AND started_at < TIMESTAMP('2026-08-01')
 GROUP BY member_casual, rideable_type
 ORDER BY member_casual, number_of_rides DESC;
+
+-- ============================================================
+-- 7. Top Start Stations
+-- Purpose: Identify the five highest-volume start stations
+-- separately for casual riders and annual members.
+-- ============================================================
+
+-- Top 5 start stations for casual riders
+SELECT
+  start_station_name,
+  COUNT(*) AS number_of_rides
+FROM `omega-granite-504718-n9.cyclistic_case_study.cyclistic_cleaned`
+WHERE start_station_name IS NOT NULL
+  AND member_casual = 'casual'
+  AND started_at >= TIMESTAMP('2025-08-01')
+  AND started_at < TIMESTAMP('2026-08-01')
+GROUP BY start_station_name
+ORDER BY number_of_rides DESC
+LIMIT 5;
+
+
+-- Top 5 start stations for annual members
+SELECT
+  start_station_name,
+  COUNT(*) AS number_of_rides
+FROM `omega-granite-504718-n9.cyclistic_case_study.cyclistic_cleaned`
+WHERE start_station_name IS NOT NULL
+  AND member_casual = 'member'
+  AND started_at >= TIMESTAMP('2025-08-01')
+  AND started_at < TIMESTAMP('2026-08-01')
+GROUP BY start_station_name
+ORDER BY number_of_rides DESC
+LIMIT 5;
