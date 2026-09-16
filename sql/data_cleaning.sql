@@ -52,3 +52,16 @@ SELECT
 FROM deduplicated
 
 WHERE TIMESTAMP_DIFF(ended_at, started_at, SECOND) > 0;
+
+-- ============================================================
+-- Final Validation
+-- Purpose: Verify the cleaned dataset row count, confirm ride
+-- IDs are unique, and check that no non-positive ride
+-- durations remain.
+-- ============================================================
+
+SELECT
+  COUNT(*) AS total_clean_rows,
+  COUNT(DISTINCT ride_id) AS unique_ride_ids,
+  COUNTIF(ride_length_seconds <= 0) AS invalid_duration_rows
+FROM `omega-granite-504718-n9.cyclistic_case_study.cyclistic_cleaned`;
