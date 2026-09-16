@@ -100,3 +100,34 @@ SELECT
 FROM hourly_averages
 GROUP BY start_hour
 ORDER BY start_hour;
+
+-- ============================================================
+-- 5. Monthly Ridership
+-- Purpose: Compare monthly ride volume between casual riders
+-- and annual members across the final analysis period.
+-- ============================================================
+
+WITH monthly_rides AS (
+  SELECT
+    DATE_TRUNC(DATE(started_at), MONTH) AS month_start,
+    member_casual,
+    COUNT(*) AS number_of_rides
+  FROM `omega-granite-504718-n9.cyclistic_case_study.cyclistic_cleaned`
+  WHERE started_at >= TIMESTAMP('2025-08-01')
+    AND started_at < TIMESTAMP('2026-08-01')
+  GROUP BY month_start, member_casual
+)
+
+SELECT
+  month_start,
+  MAX(CASE
+    WHEN member_casual = 'casual'
+    THEN number_of_rides
+  END) AS casual_rides,
+  MAX(CASE
+    WHEN member_casual = 'member'
+    THEN number_of_rides
+  END) AS member_rides
+FROM monthly_rides
+GROUP BY month_start
+ORDER BY month_start;
